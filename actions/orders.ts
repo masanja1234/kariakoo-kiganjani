@@ -5,6 +5,7 @@ import { generateOrderNumber } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { requireAdmin } from "@/lib/auth";
 import { publicOrderSelect, myOrdersSelect } from "@/lib/selectors";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import type { CartItemState } from "@/types";
 
 interface CreateOrderData {
@@ -17,15 +18,24 @@ interface CreateOrderData {
   paymentMethod: string;
   transactionReference?: string;
   items: CartItemState[];
-  deliveryFee?: number;
 }
 
 export async function createOrder(data: CreateOrderData) {
   const { userId } = await auth();
 
+  // Rate limit: 5 orders per minute per user (or per anonymous key)
+  const rateLimitKey = `order-create:${userId ?? "anon"}`;
+  const rl = checkRateLimit(rateLimitKey, RATE_LIMITS.ORDER_CREATE.limit, RATE_LIMITS.ORDER_CREATE.windowMs);
+  if (!rl.allowed) throw new Error("Umeweka maagizo mengi mno. Tafadhali subiri dakika moja.");
+
   // Prevent empty orders
   if (!data.items || data.items.length === 0) {
     throw new Error("Kikapu chako kiko tupu.");
+  }
+
+  // Cap items per order to prevent abuse
+  if (data.items.length > 50) {
+    throw new Error("Idadi ya bidhaa kwenye agizo ni kubwa sana.");
   }
 
   // Server-side: verify products, prices, and stock — never trust client totals
@@ -58,7 +68,9 @@ export async function createOrder(data: CreateOrderData) {
     return sum + unitPrice * item.quantity;
   }, 0);
 
-  const deliveryFee = Math.max(0, data.deliveryFee ?? 0);
+  // Delivery fee is always 0 at order creation — admin sets it after reviewing the order.
+  // Never trust client-supplied delivery fee (prevents fee manipulation).
+  const deliveryFee = 0;
   const total = subtotal + deliveryFee;
   const orderNumber = generateOrderNumber();
 

@@ -56,6 +56,24 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   };
 }
 
+/** Lightweight query for the dashboard "recent orders" table — avoids heavy product/image joins. */
+export async function adminGetRecentOrdersSummary(limit = 5) {
+  await requireAdmin();
+  return prisma.order.findMany({
+    select: {
+      id: true,
+      orderNumber: true,
+      customerName: true,
+      total: true,
+      status: true,
+      paymentStatus: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+  });
+}
+
 export async function adminGetCustomers(opts?: { limit?: number; skip?: number }) {
   await requireAdmin();
   return prisma.customerProfile.findMany({

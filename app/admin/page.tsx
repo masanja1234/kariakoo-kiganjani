@@ -1,17 +1,16 @@
-import { getDashboardStats } from "@/actions/admin";
+import { getDashboardStats, adminGetRecentOrdersSummary } from "@/actions/admin";
 import { formatPrice } from "@/lib/utils";
 import {
   TrendingUp, ShoppingBag, Package, Users, Store, MessageSquare,
   Bell, AlertTriangle, Clock, DollarSign
 } from "lucide-react";
 import Link from "next/link";
-import { adminGetOrders } from "@/actions/orders";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default async function AdminDashboard() {
   const [stats, recentOrders] = await Promise.all([
     getDashboardStats(),
-    adminGetOrders({ limit: 5 }),
+    adminGetRecentOrdersSummary(5),
   ]);
 
   const statCards = [

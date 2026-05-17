@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { requireAdmin } from "@/lib/auth";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 interface SubmitBudgetRequestData {
   fullName: string;
@@ -20,6 +21,11 @@ interface SubmitBudgetRequestData {
 
 export async function submitBudgetRequest(data: SubmitBudgetRequestData) {
   const { userId } = await auth();
+
+  // Rate limit: 3 budget requests per minute per user
+  const rateLimitKey = `budget-request:${userId ?? "anon"}`;
+  const rl = checkRateLimit(rateLimitKey, RATE_LIMITS.BUDGET_REQUEST.limit, RATE_LIMITS.BUDGET_REQUEST.windowMs);
+  if (!rl.allowed) throw new Error("Umepeleka maombi mengi mno. Tafadhali subiri dakika moja.");
 
   const request = await prisma.budgetRequest.create({
     data: {
@@ -57,19 +63,22 @@ export async function adminGetBudgetRequests(opts?: {
   limit?: number;
   skip?: number;
 }) {
+  await requireAdmin();
+
   const where: Record<string, unknown> = {};
   if (opts?.status) where.status = opts.status;
 
   return prisma.budgetRequest.findMany({
     where,
     include: { category: true, assignedSupplier: true },
-    take: opts?.limit ?? 50,
+    take: Math.min(opts?.limit ?? 50, 200),
     skip: opts?.skip ?? 0,
     orderBy: { createdAt: "desc" },
   });
 }
 
 export async function adminGetBudgetRequestById(id: string) {
+  await requireAdmin();
   return prisma.budgetRequest.findUnique({
     where: { id },
     include: { category: true, assignedSupplier: true },

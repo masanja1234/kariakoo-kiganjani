@@ -1,26 +1,26 @@
 import { z } from "zod";
 
 export const checkoutSchema = z.object({
-  customerName: z.string().min(2, "Jina lazima liwe na herufi 2 au zaidi"),
-  customerPhone: z.string().min(9, "Namba ya simu si sahihi"),
-  customerEmail: z.string().email("Barua pepe si sahihi").optional().or(z.literal("")),
-  region: z.string().min(1, "Chagua mkoa"),
-  district: z.string().min(1, "Andika wilaya/eneo"),
-  address: z.string().min(5, "Andika anwani kamili"),
+  customerName: z.string().min(2, "Jina lazima liwe na herufi 2 au zaidi").max(100),
+  customerPhone: z.string().min(9, "Namba ya simu si sahihi").max(20),
+  customerEmail: z.string().email("Barua pepe si sahihi").max(254).optional().or(z.literal("")),
+  region: z.string().min(1, "Chagua mkoa").max(100),
+  district: z.string().min(1, "Andika wilaya/eneo").max(100),
+  address: z.string().min(5, "Andika anwani kamili").max(500),
   paymentMethod: z.enum(["MPESA", "TIGO_PESA", "AIRTEL_MONEY", "HALOPESA", "CASH_ON_DELIVERY", "BANK_TRANSFER"]),
-  transactionReference: z.string().optional(),
+  transactionReference: z.string().max(100).optional(),
 });
 
 export const budgetRequestSchema = z.object({
-  fullName: z.string().min(2, "Jina lazima liwe na herufi 2 au zaidi"),
-  whatsappPhone: z.string().min(9, "Namba ya WhatsApp si sahihi"),
-  productNeeded: z.string().min(3, "Elezea bidhaa unayohitaji"),
-  categoryId: z.string().optional(),
-  budget: z.number().min(1000, "Budget lazima iwe TZS 1,000 au zaidi"),
-  quantity: z.number().min(1, "Idadi lazima iwe 1 au zaidi"),
-  location: z.string().min(2, "Andika eneo lako"),
+  fullName: z.string().min(2, "Jina lazima liwe na herufi 2 au zaidi").max(100),
+  whatsappPhone: z.string().min(9, "Namba ya WhatsApp si sahihi").max(20),
+  productNeeded: z.string().min(3, "Elezea bidhaa unayohitaji").max(500),
+  categoryId: z.string().max(50).optional(),
+  budget: z.number().min(1000, "Budget lazima iwe TZS 1,000 au zaidi").max(1_000_000_000),
+  quantity: z.number().min(1, "Idadi lazima iwe 1 au zaidi").max(10_000),
+  location: z.string().min(2, "Andika eneo lako").max(200),
   deliveryNeeded: z.boolean(),
-  extraDetails: z.string().optional(),
+  extraDetails: z.string().max(1000).optional(),
 });
 
 export const productSchema = z.object({
@@ -62,9 +62,9 @@ export const supplierSchema = z.object({
 });
 
 export const contactSchema = z.object({
-  name: z.string().min(2, "Jina linahitajika"),
-  email: z.string().email("Barua pepe si sahihi"),
-  message: z.string().min(10, "Ujumbe lazima uwe na maneno 10 au zaidi"),
+  name: z.string().min(2, "Jina linahitajika").max(100),
+  email: z.string().email("Barua pepe si sahihi").max(254),
+  message: z.string().min(10, "Ujumbe lazima uwe na maneno 10 au zaidi").max(2000),
 });
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
