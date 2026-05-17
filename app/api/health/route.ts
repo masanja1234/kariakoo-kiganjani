@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +8,7 @@ export async function GET() {
 
   // Check database connectivity
   try {
+    const { prisma } = await import("@/lib/prisma");
     await prisma.$queryRaw`SELECT 1`;
     checks.database = "ok";
   } catch {
