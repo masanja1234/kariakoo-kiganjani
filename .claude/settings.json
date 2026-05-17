@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c ' *)",
+      "Bash(Remove-Item -Path \"c:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\app\\\\api\\\\debug-auth\\\\route.ts\" -Force)",
+      "Bash(Remove-Item -Path \"c:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\app\\\\api\\\\debug-auth\" -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }; Write-Host \"Stopped process on port 3000\")",
+      "PowerShell(Start-Sleep -Seconds 8; \\(Invoke-WebRequest -Uri \"http://localhost:3000/admin\" -UseBasicParsing -TimeoutSec 10 -ErrorAction SilentlyContinue\\).StatusCode)",
+      "PowerShell(Move-Item -Path \"c:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\products\\\\logo.png\" -Destination \"c:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\logo.png\")",
+      "PowerShell(Get-ChildItem -Path \"$env:USERPROFILE\\\\Desktop\" -ErrorAction SilentlyContinue | Select-Object Name, LastWriteTime, @{N='SizeKB';E={[math]::Round\\($_.Length/1KB,1\\)}})",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\HomePC\\\\Desktop\" -Force | Select-Object Name, LastWriteTime, @{N='SizeKB';E={[math]::Round\\($_.Length/1KB,1\\)}})",
+      "Bash(ls \"C:\\\\Users\\\\HomePC\\\\Desktop\")",
+      "Read(//c/Users/HomePC/Desktop/**)",
+      "PowerShell($f = Get-Item \"C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\logo.png\"; Write-Host \"Size: $\\([math]::Round\\($f.Length/1KB, 1\\)\\) KB\")",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\team\")",
+      "PowerShell(Copy-Item -Path \"C:\\\\Users\\\\HomePC\\\\Desktop\\\\WhatsApp Image 2026-05-17 at 21.20.25.jpeg\" -Destination \"C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\team\\\\masanja-paul.jpg\" -Force)",
+      "PowerShell($f = Get-Item \"C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\team\\\\masanja-paul.jpg\"; Write-Host \"Size: $\\([math]::Round\\($f.Length/1KB,1\\)\\) KB\")",
+      "PowerShell(Copy-Item -Path \"C:\\\\Users\\\\HomePC\\\\Desktop\\\\WhatsApp Image 2026-05-17 at 21.20.24.jpeg\" -Destination \"C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\team\\\\salome-william.jpg\" -Force; Write-Host \"Photo copied: $\\([math]::Round\\(\\(Get-Item 'C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\team\\\\salome-william.jpg'\\).Length/1KB,1\\)\\) KB\")",
+      "PowerShell(Copy-Item -Path \"C:\\\\Users\\\\HomePC\\\\Desktop\\\\WhatsApp Image 2026-05-17 at 23.56.35.jpeg\" -Destination \"C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\team\\\\vienna-paul.jpg\" -Force; Write-Host \"Photo copied: $\\([math]::Round\\(\\(Get-Item 'C:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\\\\public\\\\team\\\\vienna-paul.jpg'\\).Length/1KB,1\\)\\) KB\")",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\HomePC\\\\Documents\\\\Kariakoo Kiganjani\" -Directory)",
+      "Bash(Select-Object Name)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\HomePC\\Desktop"
+    ]
+  }
+}
